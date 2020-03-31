@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 여기서 잘 기억해 둬야 하는 부분은 mapper의 namespace 입니다.
+이 namespace 는 다음에 작성할 DAO 구현체 쪽에서 원하는 mapper를 찾기 위해 사용됩니다. 
+따라서 namespace 는 다른 mapper 들과 겹치지 않도록 작성합니다.
+(다른 mapper들과 구분을 위해 보통 '패키지명(kr.co.arukei)+프로그램명(board)+파일명(boardMapper)' 조합을 많이 사용 합니다.
+따라서 이 mapper의 이름을 kr.co.arukei.board.boardMapper 라고 지었습니다.)-->
+
+<mapper namespace="kr.co.arukei.board.boardMapper">
+	<select id="getBoardList"
+		resultType="kr.co.arukei.board.entity.BoardVO">
+	
+		SELECT
+
+		BID, CATE_CD, TITLE, CONTENT, TAG, VIEW_CNT, REG_ID,
+		REG_DT, EDIT_DT
+
+		FROM
+
+		TBL_BOARD
+
+	</select>
+
+	<select id="getBoardContent"
+		resultType="kr.co.arukei.board.entity.BoardVO"
+		parameterType="kr.co.arukei.board.entity.BoardVO">
+
+		SELECT
+
+		BID, CATE_CD, TITLE, CONTENT, TAG, VIEW_CNT,
+		REG_ID, REG_DT, EDIT_DT
+
+		FROM
+
+		TBL_BOARD
+
+		WHERE
+
+		BID = #{bid}
+
+	</select>
+
+
+
+	<insert id="insertBoard"
+		parameterType="kr.co.arukei.board.entity.BoardVO">
+
+		INSERT INTO TBL_BOARD (CATE_CD, TITLE, CONTENT, TAG,
+		VIEW_CNT, REG_ID, REG_DT, EDIT_DT)
+
+		VALUES (
+
+		#{cate_cd}, #{title}, #{content}, #{tag}, 
+		0, #{reg_id}, now(), now()
+
+		)
+
+	</insert>
+
+	<update id="updateBoard"
+		parameterType="kr.co.arukei.board.entity.BoardVO">
+
+		UPDATE TBL_BOARD SET
+
+		CATE_CD = #{cate_cd}
+
+		, TITLE =
+		#{title}
+
+		, CONTENT = #{content}
+
+		, TAG = #{tag}
+
+		, EDIT_DT = now()
+
+		WHERE
+
+		BID
+		= ${bid}
+
+	</update>
+
+	<delete id="deleteBoard" parameterType="int">
+
+		DELETE FROM TBL_BOARD
+
+		WHERE BID = #{bid}
+
+	</delete>
+
+	<update id="updateViewCnt"
+		parameterType="kr.co.arukei.board.entity.BoardVO">
+
+		UPDATE TBL_BOARD SET
+
+		VIEW_CNT = VIEW_CNT + 1
+
+		WHERE
+
+		BID = #{bid}
+
+	</update>
+
+</mapper>
+
+
+
+
+

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!--dataSource 객체 설정 -->
+	<!-- 위 첫번째 Bean은 데이터베이스의 접속 정보를 설정합니다. 접속할 데이터베이스의 이름은 mess 이고, 데이터베이스에 
+		접속 할 사용자의 아이디는 root 로 등록합니다. 두번째와 세번째 bean - SqlSessionFactory, sqlSession은 
+		mybatis와 관련이 있습니다. -->
+	
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.mysql.cj.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://127.0.0.1:3306/mess?useSSL=false&amp;serverTimezone=Asia/Seoul" />
+		<property name="username" value="root"></property>
+		<property name="password" value=""></property>
+	</bean>
+
+
+	<!-- SqlSessionFactory 객체 설정 -->
+	<!-- 안에 있는 mapperLocations 는 데이터베이스에서 실행 할 SQL 쿼리문이 있는 위치 입니다. 
+	     'classpath:' 가 /src/main/resources/ 입니다.
+	          따라서 위와 같이 되어 있으면 /src/main/resources/main 
+		  아래 모든 하위 디렉토리를 포함하여 Mapper.xml로 끝나는 모든 파일을 참조 한다는 뜻입니다.
+		  우선 여기에 게시판 제작을 위한  'boardMapper.xml'을 만들어 두도록 합니다. -->
+	
+	<bean id="SqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations"
+			value="classpath:/mappers/**/*Mapper.xml" />
+	</bean>
+
+	<!-- SqlSession Template 설정 -->
+	<bean id="sqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate"
+		destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory"
+			ref="SqlSessionFactory" />
+	</bean>
+</beans>
+
+
+
