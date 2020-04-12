@@ -5,11 +5,13 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
-
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import kr.co.arukei.board.entity.BoardVO;
 import kr.co.arukei.board.service.BoardService;
 
 @Controller
@@ -23,6 +25,21 @@ public class BoardController {
 	public String getBoardList(Model model) throws Exception {
 		model.addAttribute("boardList", boardService.getBoardList());
 		return "board/index";
+	}
+
+	@RequestMapping(value = "/saveBoard", method = RequestMethod.POST)
+	public String saveBoard(@ModelAttribute("BoardVO") BoardVO boardVO, RedirectAttributes rttr) throws Exception {
+
+		boardService.insertBoard(boardVO);
+
+		return "redirect:/board/getBoardList";
+
+	}
+
+	@RequestMapping("/boardForm")
+	public String boardForm() {
+
+		return "board/boardForm";
 	}
 
 	/*
